@@ -10,6 +10,7 @@ repository = "https://github.com/Nathan Henrie/update-pypi-deps"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
+openssl = { version = "0.10", features = ["vendored"]}
 reqwest = { version = "0.11.23", features = ["json"] }
 serde = { version = "1.0.194", features = ["derive"] }
 serde_json = "1.0.116"
@@ -19,4 +20,3 @@ toml = "0.8.13"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = [ "env-filter" ] }
 url = { version = "2.5.0", features = ["serde"] }
-openssl = { version = "0.10", features = ["vendored"]}
