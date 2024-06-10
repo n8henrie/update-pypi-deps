@@ -79,9 +79,7 @@ impl TryFrom<TomlTable> for PypiDeps {
             .ok_or_else(|| Err::ParseDeps("no such section: project"))?;
         let dependencies: Dependencies = project
             .get("dependencies")
-            .ok_or_else(|| {
-                Err::ParseDeps("no such section: project.dependencies")
-            })?
+            .ok_or_else(|| Err::ParseDeps("no such section: project.dependencies"))?
             .try_into()?;
 
         let optional_dependencies: HashMap<_, _> = project
@@ -125,7 +123,7 @@ impl TryFrom<&toml::Value> for Dependencies {
                     // https://packaging.python.org/en/latest/specifications/version-specifiers/#id4
                     // Ordering is important as we return the first match
                     let pats = ["===", "~=", "==", "!=", "<=", ">=", "<", ">"];
-                    pats.into_iter().find(|&pat| trimmed.contains(pat) )
+                    pats.into_iter().find(|&pat| trimmed.contains(pat))
                 };
 
                 // No version, name only
@@ -199,10 +197,7 @@ async fn fetch_latest_versions(
     Ok(latest_versions)
 }
 
-fn update_versions(
-    deps: &mut PypiDeps,
-    latest_versions: &HashMap<String, String>,
-) -> Result<()> {
+fn update_versions(deps: &mut PypiDeps, latest_versions: &HashMap<String, String>) -> Result<()> {
     for (name, constraints) in deps.dependencies.0.iter_mut() {
         let constraint = constraints
             .as_ref()
@@ -291,8 +286,7 @@ pub async fn run() -> Result<()> {
     let input = std::fs::read_to_string(config.input)?;
     let toml = TomlTable(input.parse()?);
     let mut deps: PypiDeps = toml.try_into()?;
-    let latest_versions =
-        fetch_latest_versions(&deps, config.requests).await?;
+    let latest_versions = fetch_latest_versions(&deps, config.requests).await?;
 
     update_versions(&mut deps, &latest_versions)?;
 
