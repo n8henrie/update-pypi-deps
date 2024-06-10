@@ -10,7 +10,7 @@ repository = "https://github.com/Nathan Henrie/update-pypi-deps"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
-reqwest = { version = "0.11.23", features = ["json"] }
+reqwest = { version = "0.11.23", features = ["json", "rustls-tls"], default-features = false }
 serde = { version = "1.0.194", features = ["derive"] }
 serde_json = "1.0.116"
 thiserror = "1"
@@ -19,6 +19,3 @@ toml = "0.8.13"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = [ "env-filter" ] }
 url = { version = "2.5.0", features = ["serde"] }
-
-[target.aarch64-unknown-linux-gnu.dependencies]
-openssl = { version = "0.10", features = ["vendored"]}
