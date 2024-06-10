@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use Error as Err;
 
 use std::collections::HashMap;
@@ -11,7 +9,6 @@ use std::result;
 use std::sync::Arc;
 
 use clap::Parser;
-use thiserror;
 use tokio::sync::Semaphore;
 use tracing::{debug, warn};
 
@@ -59,7 +56,7 @@ pub struct Config {
     #[arg(short, long, default_value = "pyproject.toml")]
     input: String,
 
-    /// Number of PyPI requests to send in parallel
+    /// Number of `PyPI` requests to send in parallel
     #[arg(short, long, default_value = "10")]
     requests: usize,
 }
@@ -159,9 +156,9 @@ async fn fetch_latest_versions(
         let name = name.clone();
 
         let handle = tokio::spawn(async move {
-            let _permit = semaphore.acquire().await.unwrap();
+            let permit = semaphore.acquire().await.unwrap();
             let version = pypi::find_latest(&name).await;
-            drop(_permit);
+            drop(permit);
             (name, version)
         });
         handles.push(handle);
@@ -173,9 +170,9 @@ async fn fetch_latest_versions(
             let name = name.clone();
 
             let handle = tokio::spawn(async move {
-                let _permit = semaphore.acquire().await.unwrap();
+                let permit = semaphore.acquire().await.unwrap();
                 let version = pypi::find_latest(&name).await;
-                drop(_permit);
+                drop(permit);
                 (name, version)
             });
             handles.push(handle);
@@ -198,24 +195,22 @@ async fn fetch_latest_versions(
 }
 
 fn update_versions(deps: &mut PypiDeps, latest_versions: &HashMap<String, String>) -> Result<()> {
-    for (name, constraints) in deps.dependencies.0.iter_mut() {
+    for (name, constraints) in &mut deps.dependencies.0 {
         let constraint = constraints
             .as_ref()
-            .map(|(c, _)| c.to_string())
-            .unwrap_or("==".to_string());
+            .map_or("==".to_string(), |(c, _)| c.to_string());
         let latest = latest_versions.get(name).ok_or_else(|| Error::Unknown(
-            format!("dependency {} should already be in map of latest dependencies but not found:\n{:?}", name, latest_versions)))?;
+            format!("dependency {name} should already be in map of latest dependencies but not found:\n{latest_versions:?}")))?;
         *constraints = Some((constraint, latest.clone()));
     }
 
-    for (_, opt_deps) in deps.optional_dependencies.iter_mut() {
-        for (name, constraints) in opt_deps.0.iter_mut() {
+    for opt_deps in deps.optional_dependencies.values_mut() {
+        for (name, constraints) in &mut opt_deps.0 {
             let constraint = constraints
                 .as_ref()
-                .map(|(c, _)| c.to_string())
-                .unwrap_or("==".to_string());
+                .map_or("==".to_string(), |(c, _)| c.to_string());
             let latest = latest_versions.get(name).ok_or_else(|| Error::Unknown(
-            format!("dependency {} should already be in map of latest dependencies but not found:\n{:?}", name, latest_versions)))?;
+            format!("dependency {name} should already be in map of latest dependencies but not found:\n{latest_versions:?}")))?;
             *constraints = Some((constraint, latest.clone()));
         }
     }

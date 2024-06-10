@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use tracing_subscriber::{self, EnvFilter};
 
 use update_pypi_deps::{run, Result};

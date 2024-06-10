@@ -3,12 +3,12 @@ use crate::Result;
 use tracing::debug;
 
 mod response;
-use response::PypiResponse;
+use response::PypiResp;
 
 pub(crate) async fn find_latest(name: &str) -> Result<String> {
-    let url = format!("https://pypi.org/pypi/{}/json", name);
+    let url = format!("https://pypi.org/pypi/{name}/json");
     debug!("sending request to {}", url);
-    let package: PypiResponse = reqwest::get(&url).await?.json().await?;
+    let package: PypiResp = reqwest::get(&url).await?.json().await?;
     Ok(package.info.version)
 }
 

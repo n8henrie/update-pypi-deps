@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct PypiResponse {
+pub struct PypiResp {
     pub info: Info,
     // pub last_serial: i64,
     // pub releases: HashMap<String, Vec<Release>>,

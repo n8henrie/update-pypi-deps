@@ -1,8 +1,6 @@
-use serde_json;
+use crate::pypi::PypiResp;
 
-use crate::pypi::PypiResponse;
-
-fn response_from_file(filename: impl AsRef<str>) -> PypiResponse {
+fn response_from_file(filename: impl AsRef<str>) -> PypiResp {
     let input = std::fs::read(filename.as_ref()).unwrap();
     serde_json::from_slice(&input).unwrap()
 }
