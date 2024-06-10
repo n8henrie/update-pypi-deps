@@ -47,6 +47,6 @@ $ nix run github:n8henrie/update-pypi-deps
 ## Troubleshooting / FAQ
 
 - This currently doesn't handle complex version constraints (like
-`fauxmo>0.1,<0.6`); it just reuses the same contraint it is given, but with a
+`fauxmo>0.1,<0.6`); it just reuses the same constraint it is given, but with a
 new version number
 
