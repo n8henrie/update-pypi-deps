@@ -246,10 +246,10 @@ impl Display for PypiDeps {
             for dep in &self.dependencies.0 {
                 match dep {
                     (ref name, Some((constraint, version))) => {
-                        writeln!(f, "    \"{name}{constraint}{version}\"")?;
+                        writeln!(f, "    \"{name} {constraint} {version}\",")?;
                     }
                     (ref name, None) => {
-                        writeln!(f, "    \"{name}\"")?;
+                        writeln!(f, "    \"{name}\",")?;
                     }
                 }
             }
@@ -265,10 +265,10 @@ impl Display for PypiDeps {
             for dep in &deps.0 {
                 match dep {
                     (ref name, Some((constraint, version))) => {
-                        writeln!(f, "    \"{name}{constraint}{version}\"")?;
+                        writeln!(f, "    \"{name} {constraint} {version}\",")?;
                     }
                     (ref name, None) => {
-                        writeln!(f, "    \"{name}\"")?;
+                        writeln!(f, "    \"{name}\",")?;
                     }
                 }
             }
