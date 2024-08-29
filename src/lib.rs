@@ -129,10 +129,10 @@ impl TryFrom<&toml::Value> for Dependencies {
                 };
                 let mut splitter = trimmed.split(pat);
 
-                let Some(name) = splitter.next().map(str::to_string) else {
+                let Some(name) = splitter.next().map(str::trim).map(str::to_string) else {
                     return Err(ParseDeps("line without valid dependency name"));
                 };
-                let Some(version) = splitter.next().map(str::to_string) else {
+                let Some(version) = splitter.next().map(str::trim).map(str::to_string) else {
                     return Err(ParseDeps(
                         "dependency with constraint (e.g. `==`) but no version",
                     ));
