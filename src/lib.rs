@@ -195,12 +195,16 @@ async fn fetch_latest_versions(
 }
 
 fn update_versions(deps: &mut PypiDeps, latest_versions: &HashMap<String, String>) -> Result<()> {
+    let errmsg = |name| {
+        format!("dependency {name} should already be in map of latest dependencies but not found:\n{latest_versions:?}")
+    };
     for (name, constraints) in &mut deps.dependencies.0 {
         let constraint = constraints
             .as_ref()
             .map_or("==".to_string(), |(c, _)| c.to_string());
-        let latest = latest_versions.get(name).ok_or_else(|| Error::Unknown(
-            format!("dependency {name} should already be in map of latest dependencies but not found:\n{latest_versions:?}")))?;
+        let latest = latest_versions
+            .get(name)
+            .ok_or_else(|| Error::Unknown(errmsg(name)))?;
         *constraints = Some((constraint, latest.clone()));
     }
 
@@ -209,8 +213,9 @@ fn update_versions(deps: &mut PypiDeps, latest_versions: &HashMap<String, String
             let constraint = constraints
                 .as_ref()
                 .map_or("==".to_string(), |(c, _)| c.to_string());
-            let latest = latest_versions.get(name).ok_or_else(|| Error::Unknown(
-            format!("dependency {name} should already be in map of latest dependencies but not found:\n{latest_versions:?}")))?;
+            let latest = latest_versions
+                .get(name)
+                .ok_or_else(|| Error::Unknown(errmsg(name)))?;
             *constraints = Some((constraint, latest.clone()));
         }
     }
